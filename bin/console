@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'dotenv/load'
+require 'pry'
+require 'awesome_print'
+require 'background_job'
+
+BackgroundJob.configure do |config|
+  config.faktory.strict = false
+  config.sidekiq.strict = false
+end
+
+Pry.start

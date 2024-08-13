@@ -1,0 +1,58 @@
+PATH
+  remote: .
+  specs:
+    multi-background-job (0.0.1)
+      connection_pool
+      multi_json
+      redis
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    awesome_print (1.9.2)
+    coderay (1.1.3)
+    connection_pool (2.4.1)
+    diff-lcs (1.5.1)
+    dotenv (2.8.1)
+    faktory_worker_ruby (2.0.0)
+      connection_pool (~> 2.2, >= 2.2.2)
+    method_source (1.1.0)
+    multi_json (1.15.0)
+    pry (0.14.2)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
+    rake (12.3.3)
+    redis (5.2.0)
+      redis-client (>= 0.22.0)
+    redis-client (0.22.2)
+      connection_pool
+    rspec (3.13.0)
+      rspec-core (~> 3.13.0)
+      rspec-expectations (~> 3.13.0)
+      rspec-mocks (~> 3.13.0)
+    rspec-core (3.13.0)
+      rspec-support (~> 3.13.0)
+    rspec-expectations (3.13.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-mocks (3.13.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-support (3.13.1)
+    timecop (0.9.10)
+
+PLATFORMS
+  x86_64-linux
+
+DEPENDENCIES
+  awesome_print
+  dotenv
+  faktory_worker_ruby
+  multi-background-job!
+  pry
+  rake (~> 12.0)
+  rspec
+  timecop
+
+BUNDLED WITH
+   2.3.22

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'set'
+
 module BackgroundJob
   class ConfigService < Set
     def sidekiq?
