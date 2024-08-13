@@ -45,15 +45,26 @@ RSpec.describe BackgroundJob::Configuration::Sidekiq do
 
   describe "#redis" do
     let(:redis) { instance_double(::Redis) }
+    let(:config) { described_class.new }
+
+    before do
+      allow(redis).to receive(:is_a?).with(::Redis).and_return(true)
+    end
 
     it "returns nil" do
-      expect(described_class.new.redis).to be_nil
+      expect(config.redis).to be_nil
     end
 
     it "sets the redis" do
-      config = described_class.new
       config.redis = redis
       expect(config.redis).to be(redis)
+    end
+
+    it "redefines a new pool when redis is set" do
+      pool = config.redis_pool
+      config.redis = redis
+      expect(config.redis_pool).not_to be(pool)
+      expect(config.redis_pool).to be_a(BackgroundJob::RedisPool)
     end
   end
 end

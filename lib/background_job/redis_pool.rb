@@ -16,6 +16,9 @@ module BackgroundJob
     def initialize(connection)
       if connection.respond_to?(:with)
         @connection = connection
+      elsif connection.is_a?(::Redis)
+        @connection = connection
+        @connection.extend(ConnectionPoolLike)
       else
         @connection = connection ? ::Redis.new(connection) : ::Redis.new
         @connection.extend(ConnectionPoolLike)

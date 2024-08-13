@@ -4,7 +4,7 @@ class BackgroundJob::Configuration::Base
   class << self
     private
 
-    def attribute_accessor(field, validator: nil, normalizer: nil, default: nil)
+    def attribute_accessor(field, validator: nil, normalizer: nil, default: nil, write: true, read: true)
       normalizer ||= :"normalize_#{field}"
       validator ||= :"validate_#{field}"
 
@@ -16,14 +16,14 @@ class BackgroundJob::Configuration::Base
           send(:"#{field}=", fallback.respond_to?(:call) ? fallback.call : fallback)
         end
         instance_variable_get(:"@#{field}")
-      end
+      end if read
 
       define_method(:"#{field}=") do |value|
         value = send(normalizer, field, value) if respond_to?(normalizer, true)
         send(validator, field, value) if respond_to?(validator, true)
 
         instance_variable_set(:"@#{field}", value)
-      end
+      end if write
     end
   end
 
