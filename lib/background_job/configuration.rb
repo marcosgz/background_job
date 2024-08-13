@@ -12,6 +12,12 @@ module BackgroundJob
   end
 
   class Configuration
+    attr_accessor :redis
+
+    def redis_pool
+      @redis_pool ||= BackgroundJob::RedisPool.new(redis)
+    end
+
     def services
       @services ||= ConfigService.new
     end

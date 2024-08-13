@@ -3,6 +3,27 @@
 require "spec_helper"
 
 RSpec.describe BackgroundJob::Configuration do
+  describe "#redis_pool" do
+    it "returns a redis pool" do
+      config = described_class.new
+      expect(config.redis_pool).to be_a(BackgroundJob::RedisPool)
+    end
+  end
+
+  describe "#redis" do
+    let(:redis) { instance_double(::Redis) }
+
+    it "returns nil" do
+      expect(described_class.new.redis).to be_nil
+    end
+
+    it "sets the redis" do
+      config = described_class.new
+      config.redis = redis
+      expect(config.redis).to be(redis)
+    end
+  end
+
   describe "#faktory" do
     it "returns an instance of BackgroundJob::Configuration::Faktory" do
       expect(described_class.new.faktory).to be_a(BackgroundJob::Configuration::Faktory)
