@@ -27,18 +27,31 @@ Right now the gem supports Sidekiq and Faktory. Client configurations will be co
 You can build and push jobs using a simple DSL. The DSL is the same for all clients, but the configurations may vary.
 
 ```ruby
-# Enqueue the 'Accounts::ConfirmationEmailWorker' job with 'User', 1 arguments to the sidekiq "high_priority_mailing" queue
-BackgroundJob.sidekiq("Accounts::ConfirmationEmailWorker", queue: 'high_priority_mailing').with_args("User", 1).push
+# Enqueue the 'Accounts::ConfirmationEmailWorker' job
+#   with 'User', 1 arguments to the sidekiq "high_priority_mailing" queue
+#   to be executed as soon as possible.
+BackgroundJob.sidekiq("Accounts::ConfirmationEmailWorker", queue: 'high_priority_mailing')
+  .with_args("User", 1)
+  .push
 ```
 
 ```ruby
-# Schedule the 'Accounts::ConfirmationEmailWorker' job with 'User', 1 arguments to the sidekiq "high_priority_mailing" queue to be executed in one hour.
-BackgroundJob.sidekiq("Accounts::ConfirmationEmailWorker", queue: 'high_priority_mailing').with_args("User", 1).in(1.hour).push
+# Schedule the 'Accounts::ConfirmationEmailWorker' job
+#   with 'User', 1 arguments to the sidekiq "high_priority_mailing" queue
+#   to be executed in one hour.
+BackgroundJob.sidekiq("Accounts::ConfirmationEmailWorker", queue: 'high_priority_mailing')
+  .with_args("User", 1)
+  .in(1.hour)
+  .push
 ```
 
 ```ruby
-# Enqueue the 'Accounts::ConfirmationEmailWorker' job with 'User', 1 arguments to the faktory "mailing" queue
-BackgroundJob.faktory("Accounts::ConfirmationEmailWorker", queue: 'mailing').with_args("User", 1).push
+# Enqueue the 'Accounts::ConfirmationEmailWorker' job
+#   with 'User', 1 arguments to the faktory "mailing" queue
+#   to be executed as soon as possible.
+BackgroundJob.faktory("Accounts::ConfirmationEmailWorker", queue: 'mailing')
+  .with_args("User", 1)
+  .push
 ```
 
 DSL Methods:
@@ -94,7 +107,9 @@ BackgroundJob.configure do |conf|
     "UsesJob" { queue: 'default', retry: 3 },
     "BatchImportJob" { queue: 'import', retry: 0 }
   }
-  # Default is true true, it means that will raise an error if the job is not defined in the jobs configuration
+  # Default is true, it means that will raise an error if the job is
+  # not specified in the jobs configuration
+  #
   # conf.sidekiq.strict = false
 end
 ```
@@ -125,7 +140,9 @@ Faktory configurations are under a `BackgroundJob.config.faktory` config. This i
 require 'faktory'
 BackgroundJob.configure do |conf|
   conf.faktory # Just call it to enable the Faktory client
-  # Default is true true, it means that will raise an error if the job is not defined in the jobs configuration
+  # Default is true, it means that will raise an error if the job is
+  # not specified in the jobs configuration
+  #
   # conf.faktory.strict = false
 end
 ```
