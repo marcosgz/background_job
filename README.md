@@ -104,8 +104,8 @@ If your are using Sidekiq in a service that does not have a jobs/worker defined,
 BackgroundJob.configure do |conf|
   conf.sidekiq.redis = { url: 'redis://localhost:6379/0' }
   conf.sidekiq.jobs = {
-    "UsesJob" { queue: 'default', retry: 3 },
-    "BatchImportJob" { queue: 'import', retry: 0 }
+    "UsesJob" => { queue: 'default', retry: 3 },
+    "BatchImportJob" => { queue: 'import', retry: 0 }
   }
   # Default is true, it means that will raise an error if the job is
   # not specified in the jobs configuration
@@ -155,8 +155,8 @@ If your are using Faktory in a service that does not have a jobs/worker defined,
 BackgroundJob.configure do |conf|
   conf.faktory
   conf.faktory.jobs = {
-    "UsesJob" { queue: 'default', retry: 3 },
-    "BatchImportJob" { queue: 'import', retry: 0 }
+    "UsesJob" => { queue: 'default', retry: 3 },
+    "BatchImportJob" => { queue: 'import', retry: 0 }
   }
 end
 ```
