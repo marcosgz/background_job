@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in multi-background-job.gemspec
+# Specify your gem's dependencies in background_job.gemspec
 gemspec
 
 gem 'rake', '~> 12.0'

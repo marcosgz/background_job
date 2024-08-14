@@ -239,7 +239,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/marcosgz/multi-background-job.
+Bug reports and pull requests are welcome on GitHub at https://github.com/marcosgz/background_job.
 
 
 ## License

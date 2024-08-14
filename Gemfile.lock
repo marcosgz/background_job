@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    multi-background-job (0.0.1)
+    background_job (0.0.1)
       connection_pool
       multi_json
       redis
@@ -46,9 +46,9 @@ PLATFORMS
 
 DEPENDENCIES
   awesome_print
+  background_job!
   dotenv
   faktory_worker_ruby
-  multi-background-job!
   pry
   rake (~> 12.0)
   rspec

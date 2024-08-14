@@ -1,16 +1,16 @@
 require_relative 'lib/background_job/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'multi-background-job'
+  spec.name          = 'background_job'
   spec.version       = BackgroundJob::VERSION
   spec.authors       = ['Marcos G. Zimmermann']
   spec.email         = ['mgzmaster@gmail.com']
 
   spec.summary       = <<~SUMMARY
-    A generic swappable background-job client.
+    A generic swappable background job client.
   SUMMARY
   spec.description   = <<~DESCRIPTION
-    A generic swappable background-job client.
+    A generic swappable background job client that allows you to push jobs to different background job services.
   DESCRIPTION
 
   spec.homepage      = 'https://github.com/marcosgz/background_job'
