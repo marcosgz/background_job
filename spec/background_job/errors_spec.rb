@@ -9,7 +9,7 @@ RSpec.describe 'BackgroundJob errors' do
       msg = <<~MSG.chomp
       The "MissingWorker" is not defined and the BackgroundJob is configured to work on strict mode.
       it's highly recommended to include this job class to the list of known jobs.
-      Example: `BackgroundJob.configure { |config| config.sidekiq.jobs = { "MissingWorker" => {} } }`
+      Example: `BackgroundJob.config_for(:sidekiq) { |config| config.jobs = { "MissingWorker" => {} } }`
       Another option is to set config.strict = false
       MSG
 

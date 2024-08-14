@@ -15,7 +15,7 @@ module BackgroundJob
       format(
         "The %<job_class>p is not defined and the BackgroundJob is configured to work on strict mode.\n" +
         "it's highly recommended to include this job class to the list of known jobs.\n" +
-        "Example: `BackgroundJob.configure { |config| config.sidekiq.jobs = { %<job_class>p => {} } }`\n" +
+        "Example: `BackgroundJob.config_for(:sidekiq) { |config| config.jobs = { %<job_class>p => {} } }`\n" +
         'Another option is to set config.strict = false',
         job_class: @job_class,
       )
