@@ -3,6 +3,34 @@
 require 'spec_helper'
 
 RSpec.describe BackgroundJob do
+  describe '.sidekiq class method' do
+    after { reset_config! }
+
+    context 'without definition' do
+      specify do
+        described_class.configure { |c| c.sidekiq.strict = false }
+
+        job = described_class.sidekiq('DummyWorker')
+        expect(job).to be_an_instance_of(BackgroundJob::Jobs::Sidekiq)
+        expect(job.options).to be_a_kind_of(Hash)
+      end
+    end
+  end
+
+  describe '.faktory class method' do
+    after { reset_config! }
+
+    context 'without definition' do
+      specify do
+        described_class.configure { |c| c.faktory.strict = false }
+
+        job = described_class.faktory('DummyWorker')
+        expect(job).to be_an_instance_of(BackgroundJob::Jobs::Faktory)
+        expect(job.options).to be_a_kind_of(Hash)
+      end
+    end
+  end
+
   describe '.jid class method' do
     specify do
       expect(described_class.jid).to be_a_kind_of(String)
@@ -12,7 +40,18 @@ RSpec.describe BackgroundJob do
   end
 
   describe '.config class method' do
-    it { expect(described_class.config).to be_an_instance_of(BackgroundJob::Config) }
+    it { expect(described_class.config).to be_an_instance_of(BackgroundJob::Configuration) }
+  end
+
+  describe '.config_for' do
+    it 'returns the configuration for the given service' do
+      expect(described_class.config_for(:sidekiq)).to be_an_instance_of(BackgroundJob::Configuration::Sidekiq)
+      expect(described_class.config_for(:faktory)).to be_an_instance_of(BackgroundJob::Configuration::Faktory)
+    end
+
+    it 'raises an error when the service is not supported' do
+      expect { described_class.config_for(:invalid) }.to raise_error(BackgroundJob::Error, /Service `invalid' is not supported/)
+    end
   end
 
   describe '.configure' do

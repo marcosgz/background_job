@@ -8,16 +8,14 @@ require 'multi_json'
 require_relative 'background_job/version'
 require_relative 'background_job/errors'
 require_relative "background_job/redis_pool"
+require_relative 'background_job/mixin'
+require_relative 'background_job/jobs'
 require_relative 'background_job/configuration'
-require_relative 'background_job/worker'
-require_relative 'background_job/adapters/adapter'
-require_relative 'background_job/adapters/sidekiq'
-require_relative 'background_job/adapters/faktory'
+# require_relative 'background_job/adapters/adapter'
+# require_relative 'background_job/adapters/sidekiq'
+# require_relative 'background_job/adapters/faktory'
 
-# This is a central point of our background job queue system.
-# We have more external services like API and Lme that queue jobs for pipeline processing.
-# So that way all services can share the same codebase and avoid incompatibility issues
-#
+# This is a central point of our background job enqueuing system.
 # Example:
 #
 # Standard job.
@@ -39,6 +37,35 @@ require_relative 'background_job/adapters/faktory'
 #     .with_args(1)
 #     .push
 module BackgroundJob
+  SERVICES = {
+    sidekiq: 'Sidekiq',
+    faktory: 'Faktory',
+  }.freeze
+
+  SERVICES.each do |id, name|
+    define_singleton_method(id) do |job_name, **options|
+      Jobs.const_get(name).new(job_name, **options)
+    end
+  end
+
+  def self.mixin(service, **options)
+    service = service.to_sym
+    unless SERVICES.key?(service)
+      raise Error, "Service `#{service}' is not supported. Supported services are: #{SERVICES.keys.join(', ')}"
+    end
+    require_relative "background_job/mixin/#{service}"
+    require_relative "background_job/jobs/#{service}"
+
+    module_name = service.to_s.split(/_/i).collect!{ |w| w.capitalize }.join
+    mod = Mixin.const_get(module_name)
+    mod::Builder.new(**options)
+
+    # mod.module_eval do
+    #   define_method(:background_job_user_options) { options }
+    # end
+    # mod
+  end
+
   def self.jid
     SecureRandom.hex(12)
   end
@@ -52,5 +79,13 @@ module BackgroundJob
 
     config.instance_eval(&block) if block_given?
     config
+  end
+
+  def self.config_for(service)
+    service = service.to_sym
+    unless SERVICES.key?(service)
+      raise Error, "Service `#{service}' is not supported. Supported services are: #{SERVICES.keys.join(', ')}"
+    end
+    config.send(service)
   end
 end

@@ -42,6 +42,10 @@ class BackgroundJob::Configuration::Base
   #     adapter: "faktory"
   attribute_accessor :workers, default: {}
 
+  # Global disable the unique_job_active
+  attribute_accessor :unique_job_active, default: false
+  alias unique_job_active? unique_job_active
+
   # Does not validate if it's when set to false
   attribute_accessor :strict, default: true
   alias strict? strict

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BackgroundJob::Job do
+RSpec.describe BackgroundJob::Jobs::Job do
   let(:worker) { described_class.new('DummyWorker') }
 
   describe '#options' do

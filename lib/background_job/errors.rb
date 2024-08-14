@@ -6,7 +6,6 @@ module BackgroundJob
 
   class InvalidConfigError < Error
   end
-
   class NotDefinedJobError < Error
     def initialize(job_class)
       @job_class = job_class

@@ -1,30 +1,17 @@
 # frozen_string_literal: true
 
-require_relative './unique_job'
+require_relative '../unique_job'
 
+# DSL used to create a job. It's generic so it can be used with any adapter.
 module BackgroundJob
-  # DSL used to create a job. It's generic so it can be used with any adapter.
-  class Job
+  class Jobs::Job
     attr_reader :options, :payload, :job_class, :unique_job
-
-    attr_reader :arguments
-
-    # def self.coerce(payload:, **opts)
-    #   SERVICES.fetch(service).coerce_to_worker(payload, **opts)
-    # end
 
     def initialize(job_class, **options)
       @job_class = job_class
       @options = options
       @payload = {}
       unique(@options.delete(:uniq)) if @options.key?(:uniq)
-    end
-
-    # @return [Symbol] The service key
-    #
-    # @abstract
-    def service
-      raise NotImplementedError
     end
 
     # Push the job to the service backend
@@ -36,7 +23,7 @@ module BackgroundJob
 
     %i[created_at enqueued_at].each do |method_name|
       define_method method_name do |value|
-        @payload[method_name.to_s] = \
+        payload[method_name.to_s] = \
           case value
           when Numeric then value.to_f
           when String then Time.parse(value).to_f
@@ -52,7 +39,7 @@ module BackgroundJob
     # Adds arguments to the job
     # @return self
     def with_args(*args)
-      @payload['args'] = args
+      payload['args'] = args
 
       self
     end
@@ -66,8 +53,8 @@ module BackgroundJob
       int = timestamp.respond_to?(:strftime) ? timestamp.to_f : now + timestamp.to_f
       return self if int <= now
 
-      @payload['at'] = int
-      @payload['created_at'] = now
+      payload['at'] = int
+      payload['created_at'] = now
 
       self
     end
@@ -91,26 +78,10 @@ module BackgroundJob
     end
 
     def with_job_jid(jid = nil)
-      @payload['jid'] ||= jid || BackgroundJob.jid
+      payload['jid'] ||= jid || BackgroundJob.jid
 
       self
     end
-
-    # # @param :to [Symbol] Adapter key
-    # # @return Response of service
-    # # @see BackgroundJob::Adapters::** for more details
-    # def push(to: nil)
-    #   to ||= options[:service]
-    #   unless SERVICES.include?(to)
-    #     raise Error, format('Service %<to>p is not implemented. Please use one of %<list>p', to: to, list: SERVICES.keys)
-    #   end
-
-    #   @payload['created_at'] ||= Time.now.to_f
-    #   worker_to_push = with_job_jid
-    #   BackgroundJob.config.middleware.invoke(worker_to_push, to) do
-    #     SERVICES[to].push(worker_to_push)
-    #   end
-    # end
 
     def eql?(other)
       return false unless other.is_a?(self.class)

@@ -32,6 +32,7 @@ module BackgroundJob
     def faktory
       @faktory ||= begin
         services.add(:faktory)
+        require_relative 'jobs/faktory'
         Configuration::Faktory.new
       end
       if block_given?
@@ -44,6 +45,7 @@ module BackgroundJob
     def sidekiq
       @sidekiq ||= begin
         services.add(:sidekiq)
+        require_relative 'jobs/sidekiq'
         Configuration::Sidekiq.new
       end
       if block_given?
