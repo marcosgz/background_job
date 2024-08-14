@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    background_job (0.0.1)
+    background_job (0.0.1.rc1)
       connection_pool
       multi_json
       redis
