@@ -346,7 +346,7 @@ RSpec.describe BackgroundJob::Jobs::Job do
 
     specify do
       expect(described_class.new('Foo').with_args(1).to_s).to match(
-        /#<BackgroundJob::Jobs::Job:0x\h+ job_class="Foo", payload=.*args.*1.*>/
+        /#<BackgroundJob::Jobs::Job:0x\h+ job_class="Foo", args=\[1\]>/
       )
     end
   end

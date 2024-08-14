@@ -106,7 +106,9 @@ module BackgroundJob
         '#<%<c>s:0x%<o>x job_class=%<j>p',
         c: self.class, o: object_id, j: job_class
       )
-      str += format(', payload=%<p>p', p: payload) unless payload.empty?
+      if (args = payload['args'])
+        str += format(', args=%<p>p', p: args)
+      end
       str += format(', options=%<o>p', o: options) unless options.empty?
       str += format(', unique_job=%<u>p', u: unique_job) if unique_job
       str += '>'
