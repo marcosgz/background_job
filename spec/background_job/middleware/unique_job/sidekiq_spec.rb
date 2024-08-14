@@ -18,6 +18,9 @@ RSpec.describe 'BackgroundJob::Middleware::UniqueJob::Sidekiq', freeze_at: [2020
   end
   let(:now) { Time.now.to_f }
 
+  before do
+    BackgroundJob.configure { |c| c.sidekiq.jobs = { 'DummyWorker' => {} } }
+  end
 
   shared_examples 'unique job across' do |across|
     subject(:push!) { job.push }

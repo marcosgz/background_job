@@ -8,27 +8,19 @@ RSpec.describe BackgroundJob::Configuration::Base do
 
   describe '.job_options' do
     before do
-      config.jobs = {
-        'DummyWorker' => { 'queue' => 'mailing' }
-      }
+      config.jobs['DummyWorker'] = { 'queue' => 'mailing' }
     end
 
     after { reset_config! }
 
-    it 'returns an empty hash as default' do
-      config.strict = false
-      expect(config.job_options('MissingWorker')).to eq({})
-    end
-
-    it 'retrieves the options from jobs using class_name' do
-      config.strict = true
-      expect(config.job_options('DummyWorker')).to eq(queue: 'mailing')
+    it 'does not raise an error' do
+      expect(config.validate_strict_job!('DummyWorker')).to eq(true)
     end
 
     it 'raises NotDefinedWorker when on strict mode' do
       config.strict = true
 
-      expect { config.job_options('MissingWorker') }.to raise_error(BackgroundJob::NotDefinedJobError)
+      expect { config.validate_strict_job!('MissingWorker') }.to raise_error(BackgroundJob::NotDefinedJobError)
     end
   end
 

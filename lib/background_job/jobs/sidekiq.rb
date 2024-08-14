@@ -9,7 +9,11 @@ module BackgroundJob
       OPTIONS_TO_PAYLOAD = %i[queue retry].freeze
 
       def initialize(job_class, **options)
-        super(job_class, **Mixin::Sidekiq.background_job_options(job_class), **options)
+        super(
+          job_class,
+          **Mixin::Sidekiq.background_job_options(job_class, strict_check: true),
+          **options,
+        )
         @options.slice(*OPTIONS_TO_PAYLOAD).each do |key, value|
           @payload[key.to_s] = value
         end

@@ -50,13 +50,12 @@ class BackgroundJob::Configuration::Base
   attribute_accessor :strict, default: true
   alias strict? strict
 
-  def job_options(class_name)
+  def validate_strict_job!(class_name)
     class_name = class_name.to_s
     if strict? && !jobs.key?(class_name)
       raise BackgroundJob::NotDefinedJobError.new(class_name)
     end
-
-    jobs.fetch(class_name, {})
+    true
   end
 
   def config_path=(value)

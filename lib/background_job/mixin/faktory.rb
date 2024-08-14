@@ -10,7 +10,8 @@ module BackgroundJob
         retry: 25
       }.freeze
 
-      def self.background_job_options(job_class_name)
+      def self.background_job_options(job_class_name, strict_check: false)
+        BackgroundJob.config.faktory.validate_strict_job!(job_class_name) if strict_check
         options = {}
         BackgroundJob.config.faktory.jobs[job_class_name]&.each do |key, value|
           options[key] = value

@@ -6,7 +6,11 @@ module BackgroundJob
   module Jobs
     class Faktory < Job
       def initialize(job_class, **options)
-        super(job_class, **Mixin::Faktory.background_job_options(job_class), **options)
+        super(
+          job_class,
+          **Mixin::Faktory.background_job_options(job_class, strict_check: true),
+          **options
+        )
         @options.slice(:queue, :reserve_for).each do |key, value|
           @payload[key.to_s] = value
         end
