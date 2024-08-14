@@ -6,7 +6,7 @@ module BackgroundJob
   #
   # To add a middleware:
   #
-  # BackgroundJob.configure(:sidekiq) do |config|
+  # BackgroundJob.config_for(:sidekiq) do |config|
   #   config.middleware do |chain|
   #     chain.add MyMiddleware
   #   end
