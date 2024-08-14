@@ -96,5 +96,13 @@ module BackgroundJob
     def unique_job?
       unique_job.is_a?(UniqueJob)
     end
+
+    private
+
+    # Normalize payload before pushing to the service
+    # @abstract
+    def normalize_before_push!
+      # noop
+    end
   end
 end

@@ -27,8 +27,8 @@ module BackgroundJob
       #
       # @return [Hash] Payload that was sent to redis
       def push
-        with_job_jid # Generate a unique job id
-        payload['enqueued_at'] = Time.now.to_f
+        normalize_before_push!
+
         BackgroundJob.config.sidekiq.middleware.invoke(self, :sidekiq) do
           # Optimization to enqueue something now that is scheduled to go out now or in the past
           if (timestamp = payload.delete('at')) && (timestamp > Time.now.to_f)
@@ -45,6 +45,11 @@ module BackgroundJob
       end
 
       protected
+
+      def normalize_before_push!
+        with_job_jid # Generate a unique job id
+        payload['enqueued_at'] = Time.now.to_f
+      end
 
       def redis_pool
         BackgroundJob.config.sidekiq.redis_pool

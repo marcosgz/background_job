@@ -49,6 +49,12 @@ RSpec.describe BackgroundJob do
       expect(described_class.config_for(:faktory)).to be_an_instance_of(BackgroundJob::Configuration::Faktory)
     end
 
+    it 'yields the configuration' do
+      described_class.config_for(:sidekiq) do |config|
+        expect(config).to be_an_instance_of(BackgroundJob::Configuration::Sidekiq)
+      end
+    end
+
     it 'raises an error when the service is not supported' do
       expect { described_class.config_for(:invalid) }.to raise_error(BackgroundJob::Error, /Service `invalid' is not supported/)
     end

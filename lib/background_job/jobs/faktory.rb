@@ -31,19 +31,10 @@ module BackgroundJob
           Faktory client for ruby is not loaded. You must install and require https://github.com/contribsys/faktory_job_ruby.
           ERR
         end
-
-        with_job_jid # Generate a unique job id
-        payload['enqueued_at'] = Time.now.to_f
-        {'created_at' => false, 'enqueued_at' => false, 'at' => true}.each do |field, past_remove|
-          # Optimization to enqueue something now that is scheduled to go out now or in the past
-          if (time = @payload.delete(field)) &&
-              (!past_remove || (past_remove && time > Time.now.to_f))
-            @payload[field] = parse_time(time)
-          end
-        end
+        normalize_before_push!
         pool = Thread.current[:faktory_via_pool] || ::Faktory.server_pool
         BackgroundJob.config.faktory.middleware.invoke(self, :faktory) do
-          ::Faktory.client_middleware.invoke(@payload, pool) do
+          ::Faktory.client_middleware.invoke(payload, pool) do
             pool.with do |c|
               c.push(payload)
             end
@@ -53,6 +44,18 @@ module BackgroundJob
       end
 
       protected
+
+      def normalize_before_push!
+        with_job_jid # Generate a unique job id
+        payload['enqueued_at'] = Time.now.to_f
+        {'created_at' => false, 'enqueued_at' => false, 'at' => true}.each do |field, past_remove|
+          # Optimization to enqueue something now that is scheduled to go out now or in the past
+          if (time = payload.delete(field)) &&
+              (!past_remove || (past_remove && time > Time.now.to_f))
+            payload[field] = parse_time(time)
+          end
+        end
+      end
 
       # Convert job retry value acording to the Go struct datatype.
       #

@@ -69,11 +69,10 @@ module BackgroundJob
     @config ||= Configuration.new
   end
 
-  def self.configure(&block)
+  def self.configure
     return unless block_given?
 
-    config.instance_eval(&block) if block_given?
-    config
+    yield(config)
   end
 
   def self.config_for(service)
@@ -81,6 +80,8 @@ module BackgroundJob
     unless SERVICES.key?(service)
       raise Error, "Service `#{service}' is not supported. Supported services are: #{SERVICES.keys.join(', ')}"
     end
-    config.send(service)
+    service_config = config.send(service)
+    yield(service_config) if block_given?
+    service_config
   end
 end
