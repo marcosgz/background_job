@@ -97,6 +97,22 @@ module BackgroundJob
       unique_job.is_a?(UniqueJob)
     end
 
+    def to_s
+      # format(
+      #   '#<%<c>s:0x%<o>x job_class=%<j>p, payload=%<p>p, options=%<o>p, unique_job=%<u>p>',
+      #   c: self.class, o: object_id, j: job_class, p: payload, o: options, u: unique_job
+      # )
+      str = format(
+        '#<%<c>s:0x%<o>x job_class=%<j>p',
+        c: self.class, o: object_id, j: job_class
+      )
+      str += format(', payload=%<p>p', p: payload) unless payload.empty?
+      str += format(', options=%<o>p', o: options) unless options.empty?
+      str += format(', unique_job=%<u>p', u: unique_job) if unique_job
+      str += '>'
+      str
+    end
+
     private
 
     # Normalize payload before pushing to the service
