@@ -30,7 +30,7 @@ class BackgroundJob::Configuration::Base
   # Path to the YAML file with configs
   attr_reader :config_path
 
-  # A Hash with all workers definitions. The worker class name must be the main hash key
+  # A Hash with all jobs definitions. The job class name must be the main hash key
   # Example:
   #   "FaktoryIndexWorker":
   #     retry: false
@@ -40,7 +40,7 @@ class BackgroundJob::Configuration::Base
   #     retry: 5
   #     queue: "batch_index"
   #     adapter: "faktory"
-  attribute_accessor :workers, default: {}
+  attribute_accessor :jobs, default: {}
 
   # Global disable the unique_job_active
   attribute_accessor :unique_job_active, default: false
@@ -50,13 +50,13 @@ class BackgroundJob::Configuration::Base
   attribute_accessor :strict, default: true
   alias strict? strict
 
-  def worker_options(class_name)
+  def job_options(class_name)
     class_name = class_name.to_s
-    if strict? && !workers.key?(class_name)
+    if strict? && !jobs.key?(class_name)
       raise BackgroundJob::NotDefinedJobError.new(class_name)
     end
 
-    workers.fetch(class_name, {})
+    jobs.fetch(class_name, {})
   end
 
   def config_path=(value)
@@ -72,7 +72,7 @@ class BackgroundJob::Configuration::Base
 
   protected
 
-  def normalize_workers(_, value)
+  def normalize_jobs(_, value)
     return unless value.is_a?(Hash)
 
     hash = {}

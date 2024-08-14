@@ -59,11 +59,6 @@ module BackgroundJob
     module_name = service.to_s.split(/_/i).collect!{ |w| w.capitalize }.join
     mod = Mixin.const_get(module_name)
     mod::Builder.new(**options)
-
-    # mod.module_eval do
-    #   define_method(:background_job_user_options) { options }
-    # end
-    # mod
   end
 
   def self.jid

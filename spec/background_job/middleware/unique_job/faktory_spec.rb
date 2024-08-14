@@ -109,7 +109,7 @@ RSpec.describe 'BackgroundJob::Middleware::UniqueJob::Faktory', freeze_at: [2020
 
   describe '.call' do
     before do
-      BackgroundJob.configure { |c| c.faktory.workers = { 'DummyFaktoryWorker' => {} } }
+      BackgroundJob.configure { |c| c.faktory.jobs = { 'DummyFaktoryWorker' => {} } }
       require 'faktory'
       require 'faktory/testing'
       ::Faktory::Testing.fake!

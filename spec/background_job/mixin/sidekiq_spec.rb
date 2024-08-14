@@ -32,7 +32,7 @@ RSpec.describe BackgroundJob::Mixin::Sidekiq do
       end
 
       it 'replace the :queue from configurations' do
-        BackgroundJob.config.sidekiq.workers[job_name] = {
+        BackgroundJob.config.sidekiq.jobs[job_name] = {
           queue: 'local_config',
         }
         expect(described_class.background_job_options(job_name)).to eq(
@@ -42,7 +42,7 @@ RSpec.describe BackgroundJob::Mixin::Sidekiq do
       end
 
       it 'replace the :retry from configurations' do
-        BackgroundJob.config.sidekiq.workers[job_name] = {
+        BackgroundJob.config.sidekiq.jobs[job_name] = {
           retry: 10,
         }
         expect(described_class.background_job_options(job_name)).to eq(
@@ -146,7 +146,7 @@ RSpec.describe BackgroundJob::Mixin::Sidekiq do
       end
 
       it 'replace the :retry from configurations' do
-        BackgroundJob.config.sidekiq.workers[worker.name] = {
+        BackgroundJob.config.sidekiq.jobs[worker.name] = {
           retry: 10,
         }
         expect(worker.background_job_default_options).to eq(
@@ -156,7 +156,7 @@ RSpec.describe BackgroundJob::Mixin::Sidekiq do
       end
 
       it 'replace the :queue from configurations' do
-        BackgroundJob.config.sidekiq.workers[worker.name] = {
+        BackgroundJob.config.sidekiq.jobs[worker.name] = {
           queue: 'config',
         }
         expect(worker.background_job_default_options).to eq(

@@ -20,7 +20,7 @@ RSpec.describe 'BackgroundJob::Jobs::Sidekiq' do
   end
 
   before do
-    BackgroundJob.configure { |c| c.sidekiq.workers = { 'DummyWorker' => {} } }
+    BackgroundJob.configure { |c| c.sidekiq.jobs = { 'DummyWorker' => {} } }
   end
 
   after do
@@ -36,7 +36,7 @@ RSpec.describe 'BackgroundJob::Jobs::Sidekiq' do
 
     context 'with queue option from mixin' do
       before do
-        BackgroundJob.configure { |c| c.sidekiq.workers = { 'DummyWorker' => { queue: 'mailer' } } }
+        BackgroundJob.configure { |c| c.sidekiq.jobs = { 'DummyWorker' => { queue: 'mailer' } } }
       end
 
       it 'adds the global queue to payload' do
@@ -80,7 +80,7 @@ RSpec.describe 'BackgroundJob::Jobs::Sidekiq' do
 
     context 'with retry option from mixin' do
       before do
-        BackgroundJob.configure { |c| c.sidekiq.workers = { 'DummyWorker' => { retry: 3 } } }
+        BackgroundJob.configure { |c| c.sidekiq.jobs = { 'DummyWorker' => { retry: 3 } } }
       end
 
       it 'adds the global retry to payload' do

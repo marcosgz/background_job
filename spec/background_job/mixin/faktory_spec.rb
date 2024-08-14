@@ -47,7 +47,7 @@ RSpec.describe BackgroundJob::Mixin::Faktory do
     end
 
     it 'replaces the :queue from configurations' do
-      BackgroundJob.config.faktory.workers[job_name] = {
+      BackgroundJob.config.faktory.jobs[job_name] = {
         queue: 'config',
       }
       expect(described_class.background_job_options(job_name)).to eq(
@@ -57,7 +57,7 @@ RSpec.describe BackgroundJob::Mixin::Faktory do
     end
 
     it 'replace the :retry from configurations' do
-      BackgroundJob.config.faktory.workers[job_name] = {
+      BackgroundJob.config.faktory.jobs[job_name] = {
         retry: 10,
       }
       expect(described_class.background_job_options(job_name)).to eq(
@@ -136,7 +136,7 @@ RSpec.describe BackgroundJob::Mixin::Faktory do
       end
 
       it 'replaces the :queue from configurations' do
-        BackgroundJob.config.faktory.workers[worker.name] = {
+        BackgroundJob.config.faktory.jobs[worker.name] = {
           queue: 'config',
         }
         expect(worker.background_job_default_options).to eq(
@@ -146,7 +146,7 @@ RSpec.describe BackgroundJob::Mixin::Faktory do
       end
 
       it 'replace the :retry from configurations' do
-        BackgroundJob.config.faktory.workers[worker.name] = {
+        BackgroundJob.config.faktory.jobs[worker.name] = {
           retry: 10,
         }
         expect(worker.background_job_default_options).to eq(

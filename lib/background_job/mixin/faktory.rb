@@ -12,7 +12,7 @@ module BackgroundJob
 
       def self.background_job_options(job_class_name)
         options = {}
-        BackgroundJob.config.faktory.workers.dig(job_class_name)&.each do |key, value|
+        BackgroundJob.config.faktory.jobs[job_class_name]&.each do |key, value|
           options[key] = value
         end
         if defined?(::Faktory)

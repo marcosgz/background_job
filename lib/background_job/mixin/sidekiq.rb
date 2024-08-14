@@ -12,7 +12,7 @@ module BackgroundJob
 
       def self.background_job_options(job_class_name)
         options = {}
-        BackgroundJob.config.sidekiq.workers.dig(job_class_name)&.each do |key, value|
+        BackgroundJob.config.sidekiq.jobs[job_class_name]&.each do |key, value|
           options[key] = value
         end
         if defined?(::Sidekiq) && ::Sidekiq.respond_to?(:default_job_options)

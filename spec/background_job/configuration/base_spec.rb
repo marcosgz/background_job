@@ -6,9 +6,9 @@ RSpec.describe BackgroundJob::Configuration::Base do
   let(:worker_class) { Class.new(described_class) }
   let(:config) { worker_class.new }
 
-  describe '.worker_options' do
+  describe '.job_options' do
     before do
-      config.workers = {
+      config.jobs = {
         'DummyWorker' => { 'queue' => 'mailing' }
       }
     end
@@ -17,18 +17,18 @@ RSpec.describe BackgroundJob::Configuration::Base do
 
     it 'returns an empty hash as default' do
       config.strict = false
-      expect(config.worker_options('MissingWorker')).to eq({})
+      expect(config.job_options('MissingWorker')).to eq({})
     end
 
-    it 'retrieves the options from workers using class_name' do
+    it 'retrieves the options from jobs using class_name' do
       config.strict = true
-      expect(config.worker_options('DummyWorker')).to eq(queue: 'mailing')
+      expect(config.job_options('DummyWorker')).to eq(queue: 'mailing')
     end
 
     it 'raises NotDefinedWorker when on strict mode' do
       config.strict = true
 
-      expect { config.worker_options('MissingWorker') }.to raise_error(BackgroundJob::NotDefinedJobError)
+      expect { config.job_options('MissingWorker') }.to raise_error(BackgroundJob::NotDefinedJobError)
     end
   end
 
@@ -36,7 +36,7 @@ RSpec.describe BackgroundJob::Configuration::Base do
     context 'when the file is not set' do
       it 'returns nil' do
         config.config_path = nil
-        expect(config.workers).to eq({})
+        expect(config.jobs).to eq({})
       end
     end
 
@@ -45,7 +45,7 @@ RSpec.describe BackgroundJob::Configuration::Base do
 
       it 'loads the values from the file' do
         config.config_path = config_path
-        expect(config.workers).to eq({
+        expect(config.jobs).to eq({
           'DummyWorker' => { queue: 'mailing' }
         })
       end
@@ -56,7 +56,7 @@ RSpec.describe BackgroundJob::Configuration::Base do
 
       it 'raises an error' do
         config.config_path = config_path
-        expect { config.workers }.to raise_error(BackgroundJob::InvalidConfigError)
+        expect { config.jobs }.to raise_error(BackgroundJob::InvalidConfigError)
       end
     end
   end

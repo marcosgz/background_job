@@ -15,7 +15,7 @@ RSpec.describe 'BackgroundJob::Jobs::Faktory' do
   end
 
   before do
-    BackgroundJob.configure { |c| c.faktory.workers = { 'DummyWorker' => {} } }
+    BackgroundJob.configure { |c| c.faktory.jobs = { 'DummyWorker' => {} } }
   end
 
   after do
@@ -31,7 +31,7 @@ RSpec.describe 'BackgroundJob::Jobs::Faktory' do
 
     context 'with queue option from mixin' do
       before do
-        BackgroundJob.configure { |c| c.faktory.workers = { 'DummyWorker' => { queue: 'mailer' } } }
+        BackgroundJob.configure { |c| c.faktory.jobs = { 'DummyWorker' => { queue: 'mailer' } } }
       end
 
       it 'adds the global queue to payload' do
@@ -75,7 +75,7 @@ RSpec.describe 'BackgroundJob::Jobs::Faktory' do
 
     context 'with retry option from mixin' do
       before do
-        BackgroundJob.configure { |c| c.faktory.workers = { 'DummyWorker' => { retry: 3 } } }
+        BackgroundJob.configure { |c| c.faktory.jobs = { 'DummyWorker' => { retry: 3 } } }
       end
 
       it 'adds the global retry to payload' do
@@ -96,7 +96,7 @@ RSpec.describe 'BackgroundJob::Jobs::Faktory' do
     let(:job_id) { 'dummy123' }
 
     before do
-      BackgroundJob.configure { |c| c.faktory.workers = { 'DummyFaktoryWorker' => {} } }
+      BackgroundJob.configure { |c| c.faktory.jobs = { 'DummyFaktoryWorker' => {} } }
 
       require 'faktory/testing'
       Faktory::Testing.fake!
