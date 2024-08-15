@@ -3,6 +3,44 @@
 require 'spec_helper'
 
 RSpec.describe BackgroundJob do
+  describe '.job class method' do
+    after { reset_config! }
+
+    context 'without definition' do
+      specify do
+        described_class.config_for(:sidekiq) { |c| c.strict = false }
+        job = described_class.job(:sidekiq, 'DummyWorker')
+        expect(job).to be_an_instance_of(BackgroundJob::Jobs::Sidekiq)
+        expect(job.options).to be_a_kind_of(Hash)
+      end
+
+      specify do
+        described_class.config_for(:faktory) { |c| c.strict = false }
+        job = described_class.job(:faktory, 'DummyWorker')
+        expect(job).to be_an_instance_of(BackgroundJob::Jobs::Faktory)
+        expect(job.options).to be_a_kind_of(Hash)
+      end
+    end
+
+    context 'with definition' do
+      specify do
+        described_class.config_for(:sidekiq) { |c| c.strict = false }
+        job = described_class.job(:sidekiq, 'DummyWorker', queue: 'default')
+        expect(job).to be_an_instance_of(BackgroundJob::Jobs::Sidekiq)
+        expect(job.options).to be_a_kind_of(Hash)
+        expect(job.options[:queue]).to eq('default')
+      end
+
+      specify do
+        described_class.config_for(:faktory) { |c| c.strict = false }
+        job = described_class.job(:faktory, 'DummyWorker', queue: 'default')
+        expect(job).to be_an_instance_of(BackgroundJob::Jobs::Faktory)
+        expect(job.options).to be_a_kind_of(Hash)
+        expect(job.options[:queue]).to eq('default')
+      end
+    end
+  end
+
   describe '.sidekiq class method' do
     after { reset_config! }
 

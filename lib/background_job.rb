@@ -42,9 +42,17 @@ module BackgroundJob
     faktory: 'Faktory',
   }.freeze
 
-  SERVICES.each do |id, name|
-    define_singleton_method(id) do |job_name, **options|
-      Jobs.const_get(name).new(job_name, **options)
+  def self.job(service, job_name, **options)
+    service = service.to_sym
+    unless SERVICES.key?(service)
+      raise Error, "Service `#{service}' is not supported. Supported services are: #{SERVICES.keys.join(', ')}"
+    end
+    Jobs.const_get(SERVICES[service]).new(job_name, **options)
+  end
+
+  SERVICES.each do |service_name, _const_name|
+    define_singleton_method(service_name) do |job_name, **options|
+      job(service_name, job_name, **options)
     end
   end
 
