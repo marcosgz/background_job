@@ -56,7 +56,7 @@ module BackgroundJob
     end
   end
 
-  def self.mixin(service, **options)
+  def self.mixin(service, native: false, **options)
     service = service.to_sym
     unless SERVICES.key?(service)
       raise Error, "Service `#{service}' is not supported. Supported services are: #{SERVICES.keys.join(', ')}"
@@ -66,7 +66,7 @@ module BackgroundJob
 
     module_name = service.to_s.split(/_/i).collect!{ |w| w.capitalize }.join
     mod = Mixin.const_get(module_name)
-    mod::Builder.new(**options)
+    mod::Builder.new(native: native, **options)
   end
 
   def self.jid
