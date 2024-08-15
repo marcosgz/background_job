@@ -28,6 +28,7 @@ RSpec.configure do |config|
   config.include Hooks::Timecop
 
   def reset_config!
+    BackgroundJob.config.reset!
     BackgroundJob.instance_variable_set(:@config, nil)
   end
 end

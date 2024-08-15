@@ -67,4 +67,20 @@ RSpec.describe BackgroundJob::Configuration do
       expect(instance.services.faktory?).to be(true)
     end
   end
+
+  describe "#reset!" do
+    it "resets the configuration" do
+      config = described_class.new
+      config.redis = instance_double(::Redis)
+      config.faktory
+      config.sidekiq
+      config.reset!
+
+      expect(config.redis).to be_nil
+      expect(config.instance_variable_get(:@redis_pool)).to be_nil
+      expect(config.instance_variable_get(:@services)).to be_nil
+      expect(config.instance_variable_get(:@faktory)).to be_nil
+      expect(config.instance_variable_get(:@sidekiq)).to be_nil
+    end
+  end
 end

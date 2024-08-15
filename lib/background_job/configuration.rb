@@ -16,6 +16,14 @@ module BackgroundJob
   class Configuration
     attr_reader :redis
 
+    def reset!
+      @redis = nil
+      @redis_pool = nil
+      @services = nil
+      @faktory = nil
+      @sidekiq = nil
+    end
+
     def redis=(value)
       @redis_pool = nil
       @redis = value
