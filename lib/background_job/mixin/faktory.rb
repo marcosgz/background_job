@@ -28,15 +28,16 @@ module BackgroundJob
       end
 
       class Builder < Module
-        def initialize(**options)
+        def initialize(native: false, **options)
+          @native = native
           @runtime_mod = Module.new do
             define_method(:background_job_user_options) { options }
           end
         end
 
         def extended(base)
-          base.include(::Faktory::Job) if defined?(::Faktory)
-          base.extend BackgroundJob::Mixin::SharedInterface
+          base.include(::Faktory::Job) if defined?(::Faktory::Job)
+          base.extend(BackgroundJob::Mixin::SharedInterface) unless @native
           base.extend ClassMethods
           base.extend @runtime_mod
         end

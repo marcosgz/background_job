@@ -121,21 +121,54 @@ RSpec.describe BackgroundJob::Mixin::Sidekiq do
       end
     end
 
+    context 'when using native methods' do
+      let(:sidekiq_worker_module) do
+        Module.new do
+          def self.included(base)
+            base.define_singleton_method(:native_perfom_async) { |*args| args }
+          end
+        end
+      end
+      let(:worker) do
+        Class.new do
+          extend BackgroundJob.mixin(:sidekiq, native: true)
+
+          def self.name
+            'DummyWorker'
+          end
+        end
+      end
+
+      before do
+        stub_const('Sidekiq', Class.new)
+        stub_const('Sidekiq::Job', sidekiq_worker_module)
+      end
+
+      specify do
+        expect(worker).to respond_to(:native_perfom_async)
+        expect(worker.singleton_class.included_modules).not_to include(BackgroundJob::Mixin::SharedInterface)
+        expect(worker).not_to respond_to(:perform_async)
+        expect(worker).not_to respond_to(:perform_in)
+        expect(worker).not_to respond_to(:perform_at)
+      end
+    end
+
     shared_examples 'assertions for when Sidekiq is available' do
       let(:sidekiq_worker_module) { Module.new }
 
-      before do
-        stub_const('Sidekiq::Worker', sidekiq_worker_module)
-      end
-
-      it 'includes Sidekiq::Worker' do
+      it 'includes Sidekiq::Worker or Sidekiq::Job' do
         expect(worker.included_modules).to include(sidekiq_worker_module)
+        expect(worker.singleton_class.included_modules).to include(BackgroundJob::Mixin::SharedInterface)
       end
 
       it 'responds enqueuing methods' do
         expect(worker).to respond_to(:perform_async)
         expect(worker).to respond_to(:perform_in)
         expect(worker).to respond_to(:perform_at)
+      end
+
+      it 'returns :sidekiq as the service' do
+        expect(worker.background_job_service).to eq(:sidekiq)
       end
 
       it 'returns the default from Sidekiq' do
@@ -176,7 +209,6 @@ RSpec.describe BackgroundJob::Mixin::Sidekiq do
           end
         end
       end
-
       before do
         stub_const('Sidekiq', Class.new do
           def self.default_worker_options
@@ -186,6 +218,7 @@ RSpec.describe BackgroundJob::Mixin::Sidekiq do
             }
           end
         end)
+        stub_const('Sidekiq::Worker', sidekiq_worker_module)
       end
 
       include_examples 'assertions for when Sidekiq is available'
@@ -211,6 +244,7 @@ RSpec.describe BackgroundJob::Mixin::Sidekiq do
             }
           end
         end)
+        stub_const('Sidekiq::Job', sidekiq_worker_module)
       end
 
       include_examples 'assertions for when Sidekiq is available'
