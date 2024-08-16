@@ -19,5 +19,17 @@ module BackgroundJob
       @redis_pool = nil
       @redis = value
     end
+
+    def update_queues!
+      redis_pool.with do |conn|
+        indexing_queues = jobs.values.map { |job| job[:queue] }.uniq
+        key = [namespace, 'queues'].compact.join(':')
+        conn.pipelined do |pipeline|
+          indexing_queues.each do |queue|
+            pipeline.sadd?(key, queue)
+          end
+        end
+      end
+    end
   end
 end

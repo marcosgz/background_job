@@ -67,4 +67,35 @@ RSpec.describe BackgroundJob::Configuration::Sidekiq do
       expect(config.redis_pool).to be_a(BackgroundJob::RedisPool)
     end
   end
+
+  describe "#update_queues!" do
+    let(:config) { described_class.new }
+
+    context "without namespace" do
+      it "updates the queues" do
+        config.jobs = {
+          "FooJob" => { queue: "foo" },
+          "BarJob" => { queue: "bar" },
+        }
+        config.redis = Redis.new
+        config.update_queues!
+
+        expect(config.redis_pool.with { |conn| conn.smembers("queues") }).to match_array(%w[foo bar])
+      end
+    end
+
+    context "with namespace" do
+      it "updates the queues" do
+        config.jobs = {
+          "FooJob" => { queue: "foo" },
+          "BarJob" => { queue: "bar" },
+        }
+        config.redis = Redis.new
+        config.namespace = "test"
+        config.update_queues!
+
+        expect(config.redis_pool.with { |conn| conn.smembers("test:queues") }).to match_array(%w[foo bar])
+      end
+    end
+  end
 end
