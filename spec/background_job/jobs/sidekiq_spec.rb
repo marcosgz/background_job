@@ -154,7 +154,6 @@ RSpec.describe 'BackgroundJob::Jobs::Sidekiq' do
             'class' => job_class,
             'jid' => job_id,
             'created_at' => Time.now.to_f,
-            'enqueued_at' => Time.now.to_f,
             'queue' => 'mailer',
             'retry' => true,
           )

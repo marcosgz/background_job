@@ -36,6 +36,7 @@ module BackgroundJob
               redis.zadd(scheduled_queue_name, timestamp.to_f.to_s, to_json(payload))
             end
           else
+            payload['enqueued_at'] = Time.now.to_f
             redis_pool.with do |redis|
               redis.lpush(immediate_queue_name, to_json(payload))
             end
@@ -48,7 +49,6 @@ module BackgroundJob
 
       def normalize_before_push!
         with_job_jid # Generate a unique job id
-        payload['enqueued_at'] = Time.now.to_f
       end
 
       def redis_pool
