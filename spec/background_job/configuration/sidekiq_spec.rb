@@ -71,6 +71,10 @@ RSpec.describe BackgroundJob::Configuration::Sidekiq do
   describe "#update_queues!" do
     let(:config) { described_class.new }
 
+    before do
+      config.redis_pool.with { |conn| conn.del("queues") }
+    end
+
     context "without namespace" do
       it "updates the queues" do
         config.jobs = {
