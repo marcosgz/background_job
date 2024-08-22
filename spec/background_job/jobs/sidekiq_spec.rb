@@ -16,6 +16,7 @@ RSpec.describe 'BackgroundJob::Jobs::Sidekiq' do
     {
       standard_name: job.send(:immediate_queue_name),
       scheduled_name: job.send(:scheduled_queue_name),
+      queues_set_name: job.send(:queues_set_name),
     }
   end
 
@@ -131,6 +132,24 @@ RSpec.describe 'BackgroundJob::Jobs::Sidekiq' do
           raw_payload = conn.lpop(redis_dataset[:standard_name])
           expect(MultiJson.dump(result, mode: :compat)).to eq(raw_payload)
         end
+      end
+
+      it 'adds the queue to the list of queues' do
+        redis do |conn|
+          conn.del(redis_dataset[:queues_set_name])
+          expect(conn.sismember(redis_dataset[:queues_set_name], 'default')).to eq(false)
+
+          push!
+
+          expect(conn.sismember(redis_dataset[:queues_set_name], 'default')).to eq(true)
+        end
+      end
+
+      it 'retries for 3 times when the connection is read-only' do
+        allow_any_instance_of(Redis).to receive(:pipelined).and_raise(Redis::CommandError, 'READONLY You can\'t write against a read only replica.')
+        expect_any_instance_of(Redis).to receive(:close).exactly(3).times.and_call_original
+
+        expect { push! }.to raise_error(Redis::CommandError)
       end
     end
 
