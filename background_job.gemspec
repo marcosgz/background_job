@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   DESCRIPTION
 
   spec.homepage      = 'https://github.com/marcosgz/background_job'
-  spec.license       = 'MIT'
+  spec.license       = 'GPL-3.0-or-later'
   spec.required_ruby_version = Gem::Requirement.new('>= 2.7.0')
 
   raise 'RubyGems 2.0 or newer is required to protect against public gem pushes.' unless spec.respond_to?(:metadata)
